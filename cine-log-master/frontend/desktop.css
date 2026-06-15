@@ -1,0 +1,818 @@
+/* ============================
+   CineLog - PC端 & 平板端适配
+   Desktop Enhancement Only
+   不修改任何移动端样式
+   ============================ */
+
+/* ========== 平板端 768px ~ 1199px ========== */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 680px;
+    }
+
+    .collage-wall {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .annual-report {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .badges-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .modal-journal {
+        max-width: 480px;
+    }
+}
+
+/* ========== PC端 1200px+ ========== */
+@media (min-width: 1200px) {
+    /* --- 桌面纸张背景效果 --- */
+    body {
+        overflow: auto;
+        background: 
+            linear-gradient(135deg, #f5f0e8 0%, #ebe5db 50%, #f2ede5 100%);
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: 
+            radial-gradient(ellipse at 20% 50%, rgba(166,124,82,0.03) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 50%, rgba(168,178,161,0.04) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* --- 暗色模式桌面背景 --- */
+    [data-theme="dark"] body {
+        background: linear-gradient(135deg, #1a1714 0%, #1f1b18 50%, #1a1714 100%);
+    }
+
+    /* --- 主容器：双栏手账布局 --- */
+    .app-container {
+        max-width: 1400px;
+        height: auto;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        grid-template-rows: 1fr auto;
+        gap: 32px;
+        background: transparent;
+    }
+
+    .page-transition-wrapper {
+        overflow: visible;
+        position: relative;
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: 
+            0 4px 24px rgba(120,100,80,0.08),
+            0 1px 3px rgba(0,0,0,0.04),
+            inset 0 1px 0 rgba(255,255,255,0.6);
+        border: 1px solid rgba(0,0,0,0.04);
+        padding: 8px;
+    }
+
+    [data-theme="dark"] .page-transition-wrapper {
+        box-shadow: 
+            0 4px 24px rgba(0,0,0,0.3),
+            0 1px 3px rgba(0,0,0,0.2),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    /* --- 页面不再absolute定位 --- */
+    .page {
+        position: relative;
+        inset: auto;
+        overflow-y: visible;
+        overflow-x: visible;
+        padding: 32px 40px;
+        animation: none;
+    }
+
+    .page.active {
+        display: block;
+    }
+
+    /* --- 底部Tab变为侧边导航 --- */
+    .tab-bar {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        flex-direction: column;
+        background: var(--card-bg);
+        border-radius: 20px;
+        border-top: none;
+        border: 1px solid rgba(0,0,0,0.04);
+        box-shadow: 
+            0 4px 24px rgba(120,100,80,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.6);
+        padding: 32px 16px;
+        height: fit-content;
+        position: sticky;
+        top: 40px;
+        gap: 4px;
+    }
+
+    [data-theme="dark"] .tab-bar {
+        box-shadow: 
+            0 4px 24px rgba(0,0,0,0.3),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .tab-item {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .tab-item:hover {
+        background: var(--khaki);
+    }
+
+    .tab-item .tab-icon {
+        font-size: 1.3rem;
+    }
+
+    .tab-item.active {
+        background: rgba(166,124,82,0.1);
+        font-weight: 600;
+    }
+
+    .tab-item.active .tab-icon {
+        transform: none;
+    }
+
+    .tab-item .tab-label {
+        display: inline;
+        font-size: 0.88rem;
+    }
+
+    /* --- 首页布局重构 --- */
+    .home-content {
+        display: grid;
+        gap: 28px;
+    }
+
+    .journal-cover .cover-front {
+        padding: 48px 40px;
+    }
+
+    .cover-title h1 {
+        font-size: 1.8rem;
+    }
+
+    .cover-title .cover-icon {
+        font-size: 3rem;
+    }
+
+    /* 统计便签：横向4列 更大 */
+    .stats-sticky-notes {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .sticky-note {
+        padding: 20px 12px;
+        border-radius: 14px;
+    }
+
+    .sticky-value {
+        font-size: 1.6rem;
+    }
+
+    .sticky-label {
+        font-size: 0.75rem;
+    }
+
+    /* 票根和回忆卡：左右布局 */
+    .journal-inner {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .ticket-stub-section,
+    .month-memory-card,
+    .today-recommend {
+        margin-bottom: 0;
+    }
+
+    /* 首页下半部分双栏 */
+    .journal-inner::after {
+        content: none;
+    }
+
+    /* --- 数据分析页：仪表盘布局 --- */
+    .analytics-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        padding-bottom: 20px;
+    }
+
+    .analytics-content .analytics-header {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+    }
+
+    .analytics-section {
+        margin-bottom: 0;
+        min-height: 320px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .analytics-section .section-handwrite {
+        margin-bottom: 16px;
+    }
+
+    /* 报告区占满宽 */
+    .report-section {
+        grid-column: 1 / -1;
+        min-height: auto;
+    }
+
+    /* 胶片区占满宽 */
+    .filmstrip-section {
+        grid-column: 1 / -1;
+        min-height: auto;
+    }
+
+    .annual-report {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .report-card {
+        padding: 20px 14px;
+    }
+
+    .report-number {
+        font-size: 1.6rem;
+    }
+
+    /* 成长树更大 */
+    .growth-tree-canvas {
+        min-height: 280px;
+        flex: 1;
+    }
+
+    .tree-canopy {
+        max-width: 280px;
+    }
+
+    /* 书架更高 */
+    .real-bookshelf {
+        height: 180px;
+        flex: 1;
+    }
+
+    /* 星星瓶更大 */
+    .jar-glass {
+        width: 56px;
+        height: 90px;
+    }
+
+    .jar-star {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* 情绪图表更高 */
+    .mood-line {
+        height: 150px;
+    }
+
+    /* --- 收藏页：瀑布流 --- */
+    .collage-wall {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .collage-item {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .collage-title {
+        font-size: 0.9rem;
+    }
+
+    .collage-comment {
+        font-size: 0.72rem;
+        -webkit-line-clamp: 3;
+    }
+
+    /* --- 记录页时间线 --- */
+    .timeline {
+        max-width: 800px;
+    }
+
+    .timeline-card {
+        padding: 18px 20px;
+        border-radius: 14px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    /* --- 月历页 --- */
+    .calendar-grid-wrapper {
+        padding: 24px;
+        border-radius: 16px;
+    }
+
+    .cal-day {
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    /* --- 个人页 --- */
+    .passport-cover {
+        padding: 40px 32px;
+        border-radius: 20px;
+    }
+
+    .passport-info-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .badges-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .badge-item {
+        padding: 16px 8px;
+    }
+
+    .badge-icon {
+        font-size: 1.6rem;
+    }
+
+    /* --- 关键词页：左右布局 --- */
+    .keyword-story-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .keyword-story-content > .keyword-hero {
+        grid-column: 1 / -1;
+    }
+
+    /* --- 模态框更宽 --- */
+    .modal-journal {
+        max-width: 520px;
+        padding: 32px 28px;
+    }
+
+    /* --- PC端 Hover 交互 --- */
+    .sticky-note {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .sticky-note:hover {
+        transform: translateY(-4px) rotate(0deg) !important;
+        box-shadow: 0 8px 24px rgba(120,100,80,0.12);
+    }
+
+    .movie-ticket {
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: default;
+    }
+
+    .movie-ticket:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(120,100,80,0.1);
+    }
+
+    .month-memory-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .month-memory-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(120,100,80,0.1);
+    }
+
+    .recommend-polaroid {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .recommend-polaroid:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(120,100,80,0.1);
+    }
+
+    .timeline-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .timeline-card:hover {
+        transform: translateY(-3px) rotate(-0.3deg);
+        box-shadow: 0 8px 24px rgba(120,100,80,0.12);
+    }
+
+    .collage-item {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .collage-item:hover {
+        transform: translateY(-4px) rotate(0deg) !important;
+        box-shadow: 0 12px 32px rgba(120,100,80,0.15);
+    }
+
+    .analytics-section {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .analytics-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(120,100,80,0.1);
+    }
+
+    .keyword-item {
+        transition: all 0.2s;
+    }
+
+    .keyword-item:hover {
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(166,124,82,0.2);
+    }
+
+    .badge-item.unlocked {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .badge-item.unlocked:hover {
+        transform: scale(1.08) translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    /* --- 滚动条美化 --- */
+    .page::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .page::-webkit-scrollbar-thumb {
+        background: var(--brown);
+        border-radius: 3px;
+        opacity: 0.5;
+    }
+
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    body::-webkit-scrollbar-track {
+        background: var(--cream);
+    }
+
+    body::-webkit-scrollbar-thumb {
+        background: var(--khaki);
+        border-radius: 4px;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--brown);
+    }
+
+    /* --- 纸张纹理桌面加强 --- */
+    .paper-texture {
+        opacity: 0.4;
+    }
+
+    [data-theme="dark"] .paper-texture {
+        opacity: 0.15;
+    }
+}
+
+/* ========== 超宽屏 1600px+ ========== */
+@media (min-width: 1600px) {
+    .app-container {
+        max-width: 1560px;
+        padding: 48px 80px;
+        grid-template-columns: 1fr 380px;
+        gap: 40px;
+    }
+
+    .page {
+        padding: 40px 56px;
+    }
+
+    /* 首页统计卡片更大间距 */
+    .stats-sticky-notes {
+        gap: 20px;
+    }
+
+    .sticky-note {
+        padding: 24px 16px;
+    }
+
+    .sticky-value {
+        font-size: 1.8rem;
+    }
+
+    /* 数据页Grid更大 */
+    .analytics-content {
+        gap: 28px;
+    }
+
+    .analytics-section {
+        padding: 28px 24px;
+        border-radius: 20px;
+    }
+
+    /* 收藏墙4列 */
+    .collage-wall {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    /* 个人页更宽 */
+    .passport-cover {
+        padding: 48px 40px;
+    }
+
+    .passport-info-grid {
+        gap: 16px;
+    }
+
+    .badges-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    /* 时间线居中 */
+    .timeline {
+        max-width: 900px;
+    }
+
+    .timeline-card {
+        padding: 22px 24px;
+    }
+
+    /* 月历Grid更大 */
+    .calendar-grid-wrapper {
+        padding: 32px;
+    }
+
+    .cal-day {
+        font-size: 1rem;
+    }
+
+    /* Tab侧栏更宽 */
+    .tab-bar {
+        padding: 40px 20px;
+    }
+
+    .tab-item {
+        padding: 16px 24px;
+        font-size: 0.92rem;
+    }
+
+    .tab-item .tab-icon {
+        font-size: 1.4rem;
+    }
+
+    /* 年度报告卡片更大 */
+    .report-card {
+        padding: 24px 16px;
+    }
+
+    .report-number {
+        font-size: 1.8rem;
+    }
+
+    /* 成长树 */
+    .growth-tree-canvas {
+        min-height: 320px;
+    }
+
+    .tree-canopy {
+        max-width: 320px;
+    }
+
+    /* 书架更高 */
+    .real-bookshelf {
+        height: 200px;
+    }
+
+    /* 情绪图更高 */
+    .mood-line {
+        height: 180px;
+    }
+
+    /* 模态框 */
+    .modal-journal {
+        max-width: 560px;
+    }
+}
+
+/* ========== 2K屏 2560px+ ========== */
+@media (min-width: 2200px) {
+    .app-container {
+        max-width: 1800px;
+        padding: 60px 100px;
+        grid-template-columns: 1fr 420px;
+    }
+
+    .page {
+        padding: 48px 64px;
+    }
+
+    .analytics-content {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .analytics-content .analytics-header {
+        grid-column: 1 / -1;
+    }
+
+    .report-section {
+        grid-column: 1 / -1;
+    }
+
+    .filmstrip-section {
+        grid-column: 1 / -1;
+    }
+
+    .collage-wall {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .stats-sticky-notes {
+        gap: 24px;
+    }
+}
+
+/* ========== PC端侧栏内容补充 ========== */
+@media (min-width: 1200px) {
+    /* 侧栏标题装饰 */
+    .tab-bar::before {
+        content: '📖 CineLog';
+        display: block;
+        font-family: var(--font-handwrite);
+        font-size: 1.2rem;
+        color: var(--brown);
+        padding: 0 20px 20px;
+        border-bottom: 1px dashed var(--khaki);
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .tab-bar::after {
+        content: '我的光影手账';
+        display: block;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-align: center;
+        padding-top: 20px;
+        margin-top: auto;
+        border-top: 1px dashed var(--khaki);
+    }
+
+    /* 首页内页双栏结构 */
+    .journal-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .greeting-section {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+    }
+
+    .stats-sticky-notes {
+        grid-column: 1 / -1;
+    }
+
+    .ticket-stub-section {
+        grid-column: 1;
+    }
+
+    .month-memory-card {
+        grid-column: 2;
+    }
+
+    .today-recommend {
+        grid-column: 1 / -1;
+    }
+
+    /* 页面内容body可滚动 */
+    .page-transition-wrapper {
+        overflow: visible;
+        min-height: 600px;
+    }
+}
+
+/* ========== PC端主题增强 ========== */
+@media (min-width: 1200px) {
+    /* 封面卡片桌面增强 */
+    .journal-cover {
+        margin-bottom: 0;
+    }
+
+    .cover-front {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .cover-front:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 8px 32px rgba(120,100,80,0.12),
+            0 1px 0 var(--khaki);
+    }
+
+    /* 页面容器书页效果 */
+    .page-transition-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        bottom: 12px;
+        left: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, 
+            transparent, 
+            var(--khaki) 20%, 
+            var(--khaki) 80%, 
+            transparent);
+        border-radius: 1px;
+        opacity: 0.5;
+    }
+
+    /* Pill按钮增强 */
+    .pill {
+        padding: 6px 14px;
+        font-size: 0.78rem;
+        transition: all 0.2s;
+    }
+
+    .pill:hover {
+        background: var(--khaki);
+        transform: translateY(-1px);
+    }
+
+    .pill.active:hover {
+        background: var(--brown);
+    }
+
+    /* 按钮增强 */
+    .btn-handwrite {
+        padding: 8px 20px;
+        font-size: 0.88rem;
+        transition: all 0.2s;
+    }
+
+    .btn-handwrite:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(166,124,82,0.3);
+    }
+
+    /* 表单增强 */
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+
+    .form-field input:hover,
+    .form-field select:hover,
+    .form-field textarea:hover {
+        border-color: var(--sage);
+    }
+
+    /* 星星评分更大 */
+    .star-rating-large label {
+        font-size: 1.8rem;
+    }
+
+    /* 月历悬停效果 */
+    .cal-day {
+        transition: all 0.2s;
+    }
+
+    .cal-day:hover {
+        background: var(--khaki);
+        transform: scale(1.1);
+    }
+
+    .cal-day.today:hover {
+        transform: scale(1.1);
+    }
+}

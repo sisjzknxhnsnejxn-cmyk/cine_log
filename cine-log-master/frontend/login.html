@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CineLog - 打开手账</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #F8F6F2;
+            --khaki: #E8E1D5;
+            --brown: #A67C52;
+            --sage: #A8B2A1;
+            --text: #2E2E2E;
+            --text-light: #6B6560;
+            --text-muted: #9B9490;
+            --card-bg: #FFFFFF;
+            --font-serif: 'Noto Serif SC', serif;
+            --font-handwrite: 'ZCOOL KuaiLe', cursive;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { font-size: 16px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 纸张纹理 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
+
+        /* 装饰元素 */
+        .decoration {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.06;
+            animation: floatSlow 20s ease-in-out infinite;
+        }
+
+        .deco-1 { top: 10%; left: 10%; animation-delay: 0s; }
+        .deco-2 { top: 20%; right: 15%; animation-delay: 3s; }
+        .deco-3 { bottom: 20%; left: 15%; animation-delay: 6s; }
+        .deco-4 { bottom: 15%; right: 10%; animation-delay: 9s; }
+        .deco-5 { top: 50%; left: 5%; animation-delay: 12s; }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        /* 登录卡片 */
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 8px 40px rgba(120,100,80,0.1);
+            position: relative;
+            animation: cardEnter 0.8s cubic-bezier(0.22,1,0.36,1) both;
+            z-index: 1;
+        }
+
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 胶带装饰 */
+        .card-tape {
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            width: 80px;
+            height: 20px;
+            background: rgba(168,178,161,0.4);
+            border-radius: 2px;
+        }
+
+        /* 标题 */
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: block;
+            animation: bookBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bookBounce {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .login-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            font-family: var(--font-handwrite);
+            font-size: 0.9rem;
+            color: var(--brown);
+        }
+
+        /* 表单 */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--khaki);
+            border-radius: 12px;
+            background: var(--cream);
+            color: var(--text);
+            font-size: 0.92rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .field input:focus {
+            border-color: var(--brown);
+            box-shadow: 0 0 0 3px rgba(166,124,82,0.1);
+        }
+
+        .field input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Tab切换 */
+        .auth-tabs {
+            display: flex;
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 8px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .auth-tab.active {
+            background: var(--card-bg);
+            color: var(--brown);
+            box-shadow: 0 2px 8px rgba(120,100,80,0.08);
+        }
+
+        /* 按钮 */
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background: var(--brown);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+            font-family: inherit;
+            margin-top: 8px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(166,124,82,0.3);
+        }
+
+        .btn-login:active {
+            transform: scale(0.97);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 消息 */
+        .message {
+            text-align: center;
+            font-size: 0.82rem;
+            padding: 8px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .message.show { display: block; }
+        .message.success { background: rgba(168,178,161,0.2); color: #5a7a52; }
+        .message.error { background: rgba(200,80,80,0.1); color: #c44; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 表单错误 */
+        .form-error {
+            font-size: 0.78rem;
+            color: #c44;
+            min-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin-top: -8px;
+        }
+
+        .form-error:empty {
+            display: none;
+        }
+
+        /* 底部 */
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 10px 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: toastIn 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .toast.hiding {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        .toast.success { border-left: 3px solid #5a7a52; }
+        .toast.error { border-left: 3px solid #c44; }
+        .toast.info { border-left: 3px solid var(--brown); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 374px) {
+            .login-card { padding: 32px 24px; }
+            .login-title { font-size: 1.3rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 漂浮装饰 -->
+    <span class="decoration deco-1">📖</span>
+    <span class="decoration deco-2">🎬</span>
+    <span class="decoration deco-3">⭐</span>
+    <span class="decoration deco-4">🌸</span>
+    <span class="decoration deco-5">☕</span>
+
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="login-card">
+        <div class="card-tape"></div>
+        
+        <div class="login-header">
+            <span class="login-icon">📖</span>
+            <h1 class="login-title">我的光影手账</h1>
+            <p class="login-subtitle">CineLog</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">打开手账</button>
+            <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">新建手账</button>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+
+        <!-- 登录表单 -->
+        <form class="login-form" id="loginForm" onsubmit="return handleLogin(event)">
+            <div class="field">
+                <label>📝 用户名</label>
+                <input type="text" id="loginUsername" placeholder="你的名字" required autocomplete="username">
+                <div class="form-error" id="loginUsernameError"></div>
+            </div>
+            <div class="field">
+                <label>🔒 密码</label>
+                <input type="password" id="loginPassword" placeholder="你的暗号" required autocomplete="current-password">
+                <div class="form-error" id="loginPasswordError"></div>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">📖 翻开手账</button>
+        </form>
+
+        <!-- 注册表单 -->
+        <form class="login-form" id="registerForm" style="display:none;" onsubmit="return handleRegister(event)">
+            <div class="field">
+                <label>📝 用户名</label>
+                <input type="text" id="regUsername" placeholder="给自己取个名字" required autocomplete="username">
+                <div class="form-error" id="regUsernameError"></div>
+            </div>
+            <div class="field">
+                <label>🔒 密码</label>
+                <input type="password" id="regPassword" placeholder="设一个暗号（至少3个字符）" required autocomplete="new-password">
+                <div class="form-error" id="regPasswordError"></div>
+            </div>
+            <div class="field">
+                <label>🔒 确认密码</label>
+                <input type="password" id="regConfirm" placeholder="再输入一次" required autocomplete="new-password">
+                <div class="form-error" id="regConfirmError"></div>
+            </div>
+            <button type="submit" class="btn-login" id="registerBtn">✨ 创建手账</button>
+        </form>
+
+        <div class="login-footer">
+            <p>你的光影故事，从这里开始 ✦</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+
+        // 如果已登录，直接跳转
+        if (localStorage.getItem('cinelog_token')) {
+            window.location.href = 'index.html';
+        }
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const msg = document.getElementById('messageBox');
+
+            msg.className = 'message';
+            msg.style.display = 'none';
+            clearAllErrors();
+
+            if (tab === 'login') {
+                loginForm.style.display = 'flex';
+                registerForm.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'flex';
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('messageBox');
+            msg.textContent = text;
+            msg.innerText = text;
+            msg.className = 'message show ' + type;
+            msg.style.display = 'block';
+            msg.setAttribute('data-msg', text);
+        }
+
+        function showFieldError(fieldId, message) {
+            const el = document.getElementById(fieldId);
+            if (el) el.textContent = message;
+        }
+
+        function clearFieldError(fieldId) {
+            const el = document.getElementById(fieldId);
+            if (el) el.textContent = '';
+        }
+
+        function clearAllErrors() {
+            document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+        }
+
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            const icons = { success: '✅', error: '❌', info: '💡' };
+            toast.innerHTML = '<span>' + (icons[type] || '💡') + '</span><span>' + message + '</span>';
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function setButtonLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            btn.disabled = loading;
+            if (loading) {
+                btn.dataset.originalText = btn.textContent;
+                btn.textContent = '请稍候...';
+            } else {
+                btn.textContent = btn.dataset.originalText || btn.textContent;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            clearAllErrors();
+
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            // 客户端验证
+            let hasError = false;
+            if (!username) {
+                showFieldError('loginUsernameError', '请输入用户名');
+                hasError = true;
+            }
+            if (!password) {
+                showFieldError('loginPasswordError', '请输入密码');
+                hasError = true;
+            }
+            if (hasError) return false;
+
+            setButtonLoading('loginBtn', true);
+
+            try {
+                const res = await fetch(API_BASE + '/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // 登录成功
+                    localStorage.setItem('cinelog_token', data.token);
+                    localStorage.setItem('cinelog_user', JSON.stringify({ username }));
+                    showMessage('欢迎回来！正在翻开手账...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 800);
+                } else {
+                    // 登录失败
+                    const msg = data.message || '登录失败';
+                    if (msg.includes('credentials') || msg.includes('Invalid')) {
+                        showMessage('用户名或密码错误', 'error');
+                    } else {
+                        showMessage(msg, 'error');
+                    }
+                    setButtonLoading('loginBtn', false);
+                }
+            } catch (err) {
+                // 网络错误，降级到本地验证
+                const users = JSON.parse(localStorage.getItem('cinelog_users') || '{}');
+                if (users[username] && users[username].password === password) {
+                    localStorage.setItem('cinelog_user', JSON.stringify({ username }));
+                    localStorage.setItem('cinelog_token', 'local_' + username);
+                    showMessage('欢迎回来！正在翻开手账...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 800);
+                } else if (!users[username]) {
+                    showMessage('无法连接服务器，且本地无此用户', 'error');
+                } else {
+                    showMessage('密码错误', 'error');
+                }
+                setButtonLoading('loginBtn', false);
+            }
+            return false;
+        }
+
+        async function handleRegister(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            clearAllErrors();
+
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+
+            // 客户端验证
+            let hasError = false;
+            if (!username) {
+                showFieldError('regUsernameError', '请输入用户名');
+                hasError = true;
+            } else if (username.length < 2) {
+                showFieldError('regUsernameError', '用户名至少2个字符');
+                hasError = true;
+            }
+
+            if (!password) {
+                showFieldError('regPasswordError', '请输入密码');
+                hasError = true;
+            } else if (password.length < 3) {
+                showFieldError('regPasswordError', '密码至少3个字符');
+                hasError = true;
+            }
+
+            if (!confirm) {
+                showFieldError('regConfirmError', '请确认密码');
+                hasError = true;
+            } else if (password !== confirm) {
+                showFieldError('regConfirmError', '两次密码不一致');
+                hasError = true;
+            }
+
+            if (hasError) return false;
+
+            setButtonLoading('registerBtn', true);
+
+            try {
+                const res = await fetch(API_BASE + '/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (res.ok || res.status === 201) {
+                    // 注册成功
+                    localStorage.setItem('cinelog_token', data.token);
+                    localStorage.setItem('cinelog_user', JSON.stringify({ username }));
+                    // 同时保存本地备份
+                    const users = JSON.parse(localStorage.getItem('cinelog_users') || '{}');
+                    users[username] = { password, joinDate: new Date().toLocaleDateString('zh-CN') };
+                    localStorage.setItem('cinelog_users', JSON.stringify(users));
+
+                    showMessage('手账创建成功！正在打开...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 800);
+                } else {
+                    // 注册失败
+                    const msg = data.message || '注册失败';
+                    if (msg.includes('exists') || msg.includes('already')) {
+                        showFieldError('regUsernameError', '这个名字已经被用了');
+                        showMessage('这个名字已经被用了', 'error');
+                    } else {
+                        showMessage(msg, 'error');
+                    }
+                    setButtonLoading('registerBtn', false);
+                }
+            } catch (err) {
+                // 网络错误，降级到本地注册
+                const users = JSON.parse(localStorage.getItem('cinelog_users') || '{}');
+                if (users[username]) {
+                    showFieldError('regUsernameError', '这个名字已经被用了');
+                    showMessage('这个名字已经被用了', 'error');
+                    setButtonLoading('registerBtn', false);
+                    return false;
+                }
+
+                users[username] = { password, joinDate: new Date().toLocaleDateString('zh-CN') };
+                localStorage.setItem('cinelog_users', JSON.stringify(users));
+                localStorage.setItem('cinelog_user', JSON.stringify({ username }));
+                localStorage.setItem('cinelog_token', 'local_' + username);
+
+                showMessage('手账创建成功！正在打开...', 'success');
+                setTimeout(() => window.location.href = 'index.html', 800);
+            }
+            return false;
+        }
+
+        // 输入时清除对应错误
+        document.querySelectorAll('.field input').forEach(input => {
+            input.addEventListener('input', function() {
+                const errorEl = this.parentElement.querySelector('.form-error');
+                if (errorEl) errorEl.textContent = '';
+                // 同时隐藏全局消息
+                const msg = document.getElementById('messageBox');
+                if (msg && msg.classList.contains('error')) {
+                    msg.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

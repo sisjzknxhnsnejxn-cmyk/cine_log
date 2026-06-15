@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CineLog - 我的光影手账</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="desktop.css">
+</head>
+<body>
+    <!-- 纸张纹理背景 -->
+    <div class="paper-texture"></div>
+
+    <!-- 漂浮装饰 -->
+    <div class="floating-decorations" id="floatingDecorations"></div>
+
+    <!-- 星光粒子（夜间模式） -->
+    <div class="starlight-particles" id="starlightParticles"></div>
+
+    <!-- Toast消息 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 纸屑动画容器 -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- 应用容器 -->
+    <div class="app-container">
+        <div class="page-transition-wrapper">
+
+            <!-- ========== 首页 ========== -->
+            <div class="page active" id="pageHome">
+                <div class="home-content">
+                    <!-- 手账封面 -->
+                    <div class="journal-cover" id="journalCover">
+                        <div class="cover-front">
+                            <div class="cover-tape cover-tape-1"></div>
+                            <div class="cover-tape cover-tape-2"></div>
+                            <div class="cover-title">
+                                <span class="cover-icon">📖</span>
+                                <h1>我的光影手账</h1>
+                                <p class="cover-subtitle">CineLog</p>
+                            </div>
+                            <p class="cover-date" id="coverDate"></p>
+                            <span class="cover-sticker cover-sticker-film"></span>
+                        </div>
+                    </div>
+
+                    <!-- 手账内页 -->
+                    <div class="journal-inner">
+                        <!-- 问候区 -->
+                        <div class="greeting-section">
+                            <div class="greeting-header">
+                                <div class="user-polaroid">
+                                    <div class="polaroid-frame">
+                                        <div class="polaroid-avatar" id="homeAvatar">U</div>
+                                    </div>
+                                    <p class="polaroid-caption" id="homeUsername">你好</p>
+                                </div>
+                                <div class="greeting-text">
+                                    <h2 id="greetingTime">你好</h2>
+                                    <p class="greeting-date" id="greetingDate"></p>
+                                </div>
+                            </div>
+                            <div class="washi-tape washi-tape-green"></div>
+                        </div>
+
+                        <!-- 统计便签 -->
+                        <div class="stats-sticky-notes">
+                            <div class="sticky-note sticky-note-cream" style="transform:rotate(-1.5deg)">
+                                <div class="sticky-pin"></div>
+                                <div class="sticky-icon"><svg class="sticker-svg sticker-book" viewBox="0 0 24 24"><path d="M4 4h4v16H4zm6 0h4v16h-4zm6 0h4v16h-4z"/></svg></div>
+                                <div class="sticky-value" id="statTotalHome">0</div>
+                                <div class="sticky-label">总记录</div>
+                            </div>
+                            <div class="sticky-note sticky-note-green" style="transform:rotate(2deg)">
+                                <div class="sticky-pin"></div>
+                                <div class="sticky-icon"><svg class="sticker-svg sticker-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></div>
+                                <div class="sticky-value" id="statMonthHome">0</div>
+                                <div class="sticky-label">本月</div>
+                            </div>
+                            <div class="sticky-note sticky-note-pink" style="transform:rotate(-0.5deg)">
+                                <div class="sticky-pin"></div>
+                                <div class="sticky-icon"><svg class="sticker-svg sticker-fire" viewBox="0 0 24 24"><path d="M12 2c0 4-4 6-4 10a4 4 0 008 0c0-4-4-6-4-10z"/></svg></div>
+                                <div class="sticky-value" id="statStreakHome">0</div>
+                                <div class="sticky-label">连续天数</div>
+                            </div>
+                            <div class="sticky-note sticky-note-blue" style="transform:rotate(1deg)">
+                                <div class="sticky-pin"></div>
+                                <div class="sticky-icon"><svg class="sticker-svg sticker-heart" viewBox="0 0 24 24"><path d="M12 21C12 21 4 15 4 9.5C4 6.5 6.5 4 9 4c1.7 0 3 1 3 1s1.3-1 3-1c2.5 0 5 2.5 5 5.5C20 15 12 21 12 21z"/></svg></div>
+                                <div class="sticky-value" id="statMoodHome">😊</div>
+                                <div class="sticky-label">本月心情</div>
+                            </div>
+                        </div>
+
+                        <!-- 今日电影票根 -->
+                        <div class="ticket-stub-section">
+                            <div class="section-tape"></div>
+                            <h3 class="section-handwrite"><svg class="sticker-svg sticker-ticket" viewBox="0 0 24 24"><path d="M2 9V7a2 2 0 012-2h16a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 000-4z"/></svg> 今日票根</h3>
+                            <div class="movie-ticket" id="movieTicket">
+                                <div class="ticket-left">
+                                    <div class="ticket-title">等待第一张票根</div>
+                                    <div class="ticket-meta">
+                                        <span class="ticket-date">--</span>
+                                        <span class="ticket-type">--</span>
+                                    </div>
+                                    <div class="ticket-rating">☆☆☆☆☆</div>
+                                </div>
+                                <div class="ticket-divider"></div>
+                                <div class="ticket-right">
+                                    <div class="ticket-barcode"></div>
+                                    <div class="ticket-number">NO.000000</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 本月回忆卡 -->
+                        <div class="month-memory-card">
+                            <div class="memory-tape"></div>
+                            <div class="memory-content" id="monthMemory">
+                                <p class="memory-text">开始记录，生成你的本月回忆卡...</p>
+                            </div>
+                            <div class="memory-sticker"></div>
+                        </div>
+
+                        <!-- 今日推荐 -->
+                        <div class="today-recommend">
+                            <div class="recommend-tape"></div>
+                            <h3 class="section-handwrite"><svg class="sticker-svg sticker-star" viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18,21 12,17 6,21 7.5,14 2,9 9,9"/></svg> 今日回味</h3>
+                            <div class="recommend-polaroid" id="todayRecommend">
+                                <div class="polaroid-photo"><span class="photo-emoji">✨</span></div>
+                                <div class="polaroid-info">
+                                    <div class="polaroid-title">开始你的第一条记录</div>
+                                    <div class="polaroid-desc">点击下方"记录"开始你的光影手账之旅</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 记录页 ========== -->
+            <div class="page" id="pageRecords">
+                <div class="records-content">
+                    <div class="page-header-handwrite">
+                        <h2>📝 我的记录</h2>
+                        <div class="header-actions">
+                            <button class="btn-handwrite" onclick="openAddModal()">+ 写新的</button>
+                            <div class="filter-pills">
+                                <button class="pill active" data-filter="all" onclick="setFilter('all')">全部</button>
+                                <button class="pill" data-filter="电影" onclick="setFilter('电影')">🎬</button>
+                                <button class="pill" data-filter="剧集" onclick="setFilter('剧集')">📺</button>
+                                <button class="pill" data-filter="播客" onclick="setFilter('播客')">🎙️</button>
+                                <button class="pill" data-filter="纪录片" onclick="setFilter('纪录片')">📹</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline" id="recordsTimeline"></div>
+                </div>
+            </div>
+
+            <!-- ========== 月历页 ========== -->
+            <div class="page" id="pageCalendar">
+                <div class="calendar-content">
+                    <div class="page-header-handwrite">
+                        <h2>📅 手账月历</h2>
+                        <div class="calendar-nav">
+                            <button class="cal-nav-btn" onclick="prevMonth()">◀</button>
+                            <span class="cal-month-label" id="calMonthLabel"></span>
+                            <button class="cal-nav-btn" onclick="nextMonth()">▶</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid-wrapper">
+                        <div class="calendar-weekdays">
+                            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+                    <div class="day-detail-panel" id="dayDetailPanel">
+                        <div class="day-detail-header">
+                            <span id="dayDetailDate"></span>
+                            <button class="close-detail" onclick="closeDayDetail()">✕</button>
+                        </div>
+                        <div class="day-detail-records" id="dayDetailRecords"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 数据分析页 ========== -->
+            <div class="page" id="pageAnalytics">
+                <div class="analytics-content">
+                    <div class="page-header-handwrite analytics-header">
+                        <h2>📊 我的观影档案册</h2>
+                        <p class="analytics-subtitle">每一帧都值得珍藏</p>
+                    </div>
+
+                    <!-- 年度观影报告 -->
+                    <div class="analytics-section report-section">
+                        <div class="section-tape-decor"></div>
+                        <div class="torn-edge torn-edge-top"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-star" viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18,21 12,17 6,21 7.5,14 2,9 9,9"/></svg> 年度观影报告</h3>
+                        <div class="annual-report" id="annualReport">
+                            <div class="report-card">
+                                <div class="report-number" id="reportTotal">0</div>
+                                <div class="report-label">总记录</div>
+                            </div>
+                            <div class="report-card">
+                                <div class="report-number" id="reportFavType">--</div>
+                                <div class="report-label">最爱类型</div>
+                            </div>
+                            <div class="report-card">
+                                <div class="report-number" id="reportAvgRating">--</div>
+                                <div class="report-label">平均评分</div>
+                            </div>
+                            <div class="report-card">
+                                <div class="report-number" id="reportHighMonth">--</div>
+                                <div class="report-label">高光月份</div>
+                            </div>
+                        </div>
+                        <div class="torn-edge torn-edge-bottom"></div>
+                    </div>
+
+                    <!-- 星星许愿瓶 -->
+                    <div class="analytics-section wishing-jar-section">
+                        <div class="section-tape-decor tape-sage"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-star" viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18,21 12,17 6,21 7.5,14 2,9 9,9"/></svg> 星星许愿瓶</h3>
+                        <p class="section-desc">每一颗星都是你对作品的心意</p>
+                        <div class="wishing-jars" id="wishingJars"></div>
+                    </div>
+
+                    <!-- 成长树 -->
+                    <div class="analytics-section growth-tree-section">
+                        <div class="section-tape-decor tape-brown"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-leaf" viewBox="0 0 24 24"><path d="M12 2C6 8 4 14 4 18c0 2 2 4 4 4h8c2 0 4-2 4-4 0-4-2-10-8-16z"/></svg> 成长树</h3>
+                        <div class="growth-tree-canvas" id="growthTreeCanvas"></div>
+                        <p class="tree-desc" id="treeDesc">每一条记录都是一片新叶</p>
+                    </div>
+
+                    <!-- 记录书架 -->
+                    <div class="analytics-section bookshelf-section">
+                        <div class="section-tape-decor"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-book" viewBox="0 0 24 24"><path d="M4 4h4v16H4zm6 0h4v16h-4zm6 0h4v16h-4z"/></svg> 记录书架</h3>
+                        <p class="section-desc">每月一本，记录厚度看得见</p>
+                        <div class="real-bookshelf" id="realBookshelf"></div>
+                    </div>
+
+                    <!-- 观影胶片 -->
+                    <div class="analytics-section filmstrip-section">
+                        <div class="section-tape-decor tape-sage"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-film" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="12" x2="7" y2="12"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="12" x2="22" y2="12"/><line x1="17" y1="17" x2="22" y2="17"/></svg> 观影胶片长卷</h3>
+                        <div class="film-scroll" id="filmScroll"></div>
+                        <p class="film-count" id="filmCount">0 部电影</p>
+                    </div>
+
+                    <!-- 情绪轨迹 -->
+                    <div class="analytics-section mood-section">
+                        <div class="section-tape-decor tape-brown"></div>
+                        <h3 class="section-handwrite"><svg class="sticker-svg sticker-heart" viewBox="0 0 24 24"><path d="M12 21C12 21 4 15 4 9.5C4 6.5 6.5 4 9 4c1.7 0 3 1 3 1s1.3-1 3-1c2.5 0 5 2.5 5 5.5C20 15 12 21 12 21z"/></svg> 情绪轨迹</h3>
+                        <div class="mood-chart" id="moodChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 收藏页 ========== -->
+            <div class="page" id="pageFavorites">
+                <div class="favorites-content">
+                    <div class="page-header-handwrite">
+                        <h2>💝 我的收藏墙</h2>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">5星作品自动收藏</p>
+                    </div>
+                    <div class="collage-wall" id="collageWall"></div>
+                    <div class="empty-favorites" id="emptyFavorites">
+                        <div class="empty-illustration">🎨</div>
+                        <p>收藏墙还是空的</p>
+                        <p class="empty-hint">给作品打5星即可收藏到这里</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 个人页 ========== -->
+            <div class="page" id="pageProfile">
+                <div class="profile-content">
+                    <div class="passport-cover">
+                        <div class="passport-stamp"></div>
+                        <div class="passport-header">
+                            <div class="passport-avatar" id="profileAvatar">U</div>
+                            <h2 class="passport-name" id="profileName">用户</h2>
+                            <p class="passport-subtitle">光影手账持有人</p>
+                        </div>
+
+                        <div class="passport-info-grid">
+                            <div class="passport-field">
+                                <span class="field-label">总记录</span>
+                                <span class="field-value" id="profileTotal">0</span>
+                            </div>
+                            <div class="passport-field">
+                                <span class="field-label">注册日期</span>
+                                <span class="field-value" id="profileJoinDate">--</span>
+                            </div>
+                            <div class="passport-field">
+                                <span class="field-label">最爱类型</span>
+                                <span class="field-value" id="profileFavType">--</span>
+                            </div>
+                            <div class="passport-field">
+                                <span class="field-label">平均评分</span>
+                                <span class="field-value" id="profileAvgRating">--</span>
+                            </div>
+                        </div>
+
+                        <div class="passport-keywords">
+                            <h3>🏷️ 年度关键词</h3>
+                            <div class="keyword-cloud" id="keywordCloud"></div>
+                        </div>
+
+                        <div class="passport-badges">
+                            <h3>🏅 成就徽章</h3>
+                            <div class="badges-grid" id="badgesGrid"></div>
+                        </div>
+
+                        <div class="passport-actions">
+                            <button class="btn-passport" onclick="toggleTheme()">
+                                <span id="themeIcon">🌙</span> <span id="themeLabel">夜间模式</span>
+                            </button>
+                            <button class="btn-passport btn-passport-danger" onclick="handleLogout()">
+                                👋 退出手账
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 关键词详情页 ========== -->
+            <div class="page" id="pageKeyword">
+                <div class="keyword-story-page">
+                    <button class="back-btn" onclick="goBackFromKeyword()">← 返回</button>
+                    <div class="keyword-story-content" id="keywordStoryContent"></div>
+                </div>
+            </div>
+
+        </div><!-- /page-transition-wrapper -->
+
+        <!-- 底部Tab导航 -->
+        <nav class="tab-bar" id="tabBar" role="tablist" aria-label="主导航">
+            <button class="tab-item active" data-page="Home" onclick="navigateTo('Home')" role="tab" aria-label="首页">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">首页</span>
+            </button>
+            <button class="tab-item" data-page="Records" onclick="navigateTo('Records')" role="tab" aria-label="记录">
+                <span class="tab-icon">📝</span>
+                <span class="tab-label">记录</span>
+            </button>
+            <button class="tab-item" data-page="Calendar" onclick="navigateTo('Calendar')" role="tab" aria-label="月历">
+                <span class="tab-icon">📅</span>
+                <span class="tab-label">月历</span>
+            </button>
+            <button class="tab-item" data-page="Analytics" onclick="navigateTo('Analytics')" role="tab" aria-label="数据">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">数据</span>
+            </button>
+            <button class="tab-item" data-page="Favorites" onclick="navigateTo('Favorites')" role="tab" aria-label="收藏">
+                <span class="tab-icon">💝</span>
+                <span class="tab-label">收藏</span>
+            </button>
+            <button class="tab-item" data-page="Profile" onclick="navigateTo('Profile')" role="tab" aria-label="我的">
+                <span class="tab-icon">👤</span>
+                <span class="tab-label">我的</span>
+            </button>
+        </nav>
+    </div><!-- /app-container -->
+
+    <!-- ========== 添加记录模态框 ========== -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-journal" role="dialog" aria-label="添加记录">
+            <div class="modal-tape"></div>
+            <div class="modal-header-journal">
+                <h2>📌 贴一张新的</h2>
+                <button class="modal-close-btn" onclick="closeAddModal()" aria-label="关闭">✕</button>
+            </div>
+            <form class="journal-form" onsubmit="event.preventDefault();addRecord();">
+                <div class="form-field">
+                    <label>名称</label>
+                    <input type="text" id="recordTitle" placeholder="电影/剧集名称" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>类型</label>
+                        <select id="recordType">
+                            <option value="电影">🎬 电影</option>
+                            <option value="剧集">📺 剧集</option>
+                            <option value="播客">🎙️ 播客</option>
+                            <option value="纪录片">📹 纪录片</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>日期</label>
+                        <input type="date" id="recordDate" required>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>评分</label>
+                    <div class="star-rating-large">
+                        <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                        <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                        <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                        <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                        <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>心情</label>
+                    <div class="mood-selector">
+                        <button type="button" class="mood-btn" data-mood="😊" onclick="selectMood(this)">😊</button>
+                        <button type="button" class="mood-btn" data-mood="😢" onclick="selectMood(this)">😢</button>
+                        <button type="button" class="mood-btn" data-mood="😍" onclick="selectMood(this)">😍</button>
+                        <button type="button" class="mood-btn" data-mood="🤔" onclick="selectMood(this)">🤔</button>
+                        <button type="button" class="mood-btn" data-mood="😴" onclick="selectMood(this)">😴</button>
+                        <button type="button" class="mood-btn" data-mood="🥰" onclick="selectMood(this)">🥰</button>
+                        <button type="button" class="mood-btn" data-mood="😤" onclick="selectMood(this)">😤</button>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>短评</label>
+                    <textarea id="recordComment" placeholder="写下你的感受..." rows="3"></textarea>
+                </div>
+                <div class="form-field">
+                    <label>标签（空格分隔）</label>
+                    <input type="text" id="recordTags" placeholder="悬疑 烧脑 高分">
+                </div>
+                <div class="form-submit">
+                    <button type="button" class="btn-journal-cancel" onclick="closeAddModal()">取消</button>
+                    <button type="submit" class="btn-journal-submit">📌 贴上去</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== 编辑记录模态框 ========== -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-journal" role="dialog" aria-label="编辑记录">
+            <div class="modal-tape modal-tape-edit"></div>
+            <div class="modal-header-journal">
+                <h2>✏️ 修改一下</h2>
+                <button class="modal-close-btn" onclick="closeEditModal()" aria-label="关闭">✕</button>
+            </div>
+            <form class="journal-form" onsubmit="event.preventDefault();saveEdit();">
+                <div class="form-field">
+                    <label>名称</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>类型</label>
+                        <select id="editType">
+                            <option value="电影">🎬 电影</option>
+                            <option value="剧集">📺 剧集</option>
+                            <option value="播客">🎙️ 播客</option>
+                            <option value="纪录片">📹 纪录片</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>日期</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>评分</label>
+                    <div class="star-rating-large">
+                        <input type="radio" name="editRating" value="5" id="editStar5"><label for="editStar5">★</label>
+                        <input type="radio" name="editRating" value="4" id="editStar4"><label for="editStar4">★</label>
+                        <input type="radio" name="editRating" value="3" id="editStar3"><label for="editStar3">★</label>
+                        <input type="radio" name="editRating" value="2" id="editStar2"><label for="editStar2">★</label>
+                        <input type="radio" name="editRating" value="1" id="editStar1"><label for="editStar1">★</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>短评</label>
+                    <textarea id="editComment" rows="3"></textarea>
+                </div>
+                <div class="form-submit">
+                    <button type="button" class="btn-journal-cancel" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn-journal-submit">✅ 保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== 删除确认模态框 ========== -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-journal modal-sm" role="dialog" aria-label="确认删除">
+            <div class="modal-tape"></div>
+            <div class="modal-header-journal">
+                <h2>🗑️ 确认撕掉？</h2>
+                <button class="modal-close-btn" onclick="closeDeleteModal()" aria-label="关闭">✕</button>
+            </div>
+            <p class="delete-message">这张记录将从手账中移除，确定要撕掉吗？</p>
+            <div class="form-submit">
+                <button type="button" class="btn-journal-cancel" onclick="closeDeleteModal()">算了</button>
+                <button type="button" class="btn-journal-danger" onclick="confirmDelete()">🗑️ 撕掉</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
